@@ -31,6 +31,15 @@ else
     echo "=> Xdebug is already configured"
 fi
 
+cd /mnt/hgfs/php_extensions
+
+for file in `ls ./`
+do
+    if test -f $file
+    then
+        cp $file /usr/local/etc/php/conf.d/$file
+    fi
+done
 
 # first arg is `-f` or `--some-option`
 # or first arg is `something.conf`

@@ -17,21 +17,7 @@ RUN apt-get update && apt-get install -y make g++ re2c \
     bzip2 \
 	libbz2-dev \
 	libmemcached-dev \
-	--no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* \
-	&& docker-php-ext-install mbstring \
-    && docker-php-ext-install iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install mysqli \
-    && docker-php-ext-install bz2 \
-    && docker-php-ext-install ctype \
-    && docker-php-ext-install zip \
-	&& docker-php-ext-install pdo \
-	&& docker-php-ext-install pdo_mysql \
-	&& docker-php-ext-install opcache \
-	&& apt-get -y autoremove \ 
-	&& apt-get -y autoclean 
+	--no-install-recommends
 
 
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -40,8 +26,10 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
         && docker-php-ext-install bz2 \
         && docker-php-ext-install zip \
         && docker-php-ext-install pdo \
+		&& docker-php-ext-install ctype \
 		&& docker-php-ext-install mcrypt \
         && docker-php-ext-install pdo_mysql \
+		&& docker-php-ext-install mbstring \
         && docker-php-ext-install opcache \
 		&& echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
 		&& echo "extension=redis.so" > /usr/local/etc/php/conf.d/phpredis.ini \
@@ -50,7 +38,7 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 		&& echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/bcmath.ini \
 		&& echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini \
 		&& echo "extension=imagick.so" >> /usr/local/etc/php/conf.d/imagick.ini 
-
+		
 		
 WORKDIR /usr/src/php/ext/
 
@@ -98,8 +86,7 @@ RUN set -xe && \
 RUN docker-php-source extract \
 	&& cd /usr/src/php/ext/bcmath \
 	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
-	&& make clean \
-	&& docker-php-source delete
+	&& make clean 
 
 #ImageMagick
 RUN set -xe && \
