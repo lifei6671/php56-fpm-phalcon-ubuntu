@@ -78,10 +78,8 @@ ENV PHPREDIS_VERSION=3.0.0
 RUN set -xe && \
 	curl -LO https://github.com/phpredis/phpredis/archive/3.1.4.tar.gz \
 	&& tar xzf 3.1.4.tar.gz \
-	&& cd phpredis-3.1.4 \
-	&& phpize ./configure --enable-redis-igbinary \
-	&& make \
-	&& make install  \
+	&&  docker-php-ext-configure phpredis-3.1.4 --enable-redis-igbinary \
+	&& docker-php-ext-install phpredis-3.1.4 \
 	&& cd .. \ 
 	&& rm -rf phpredis-3.1.4
 	
