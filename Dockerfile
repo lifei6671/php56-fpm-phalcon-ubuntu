@@ -106,9 +106,6 @@ RUN set -xe && \
 	phpize && ./configure --enable-xdebug && make && make install && \
 	cd ../ && rm -rf xdebug-XDEBUG_2_4_1
 	
-#Delete apk
-RUN apk del gcc g++ git make && \
-	rm -rf /tmp/*
 	
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
