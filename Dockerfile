@@ -83,10 +83,10 @@ RUN set -xe && \
     && cd .. \
 	&& rm -rf v${PHALCON_VERSION}.tar.gz
 
-RUN docker-php-source extract \
-	&& cd /usr/src/php/ext/bcmath \
+RUN tar -Jxf /usr/src/php.tar.xz -C /usr/src/php/src/ --strip-components=1 \
+	&& cd /usr/src/php/src/ext/bcmath \
 	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
-	&& make clean 
+	&& make clean && cd .. && rm -rf /usr/src/php/src/
 
 #ImageMagick
 RUN set -xe && \
