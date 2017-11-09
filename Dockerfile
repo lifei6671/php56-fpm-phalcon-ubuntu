@@ -2,8 +2,8 @@ FROM php:5.6.26-fpm
 
 MAINTAINER Minho <longfei6671@163.com>
 
-ADD conf/php.ini /usr/local/etc/php/php.ini
-ADD conf/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY conf/php.ini /usr/local/etc/php/php.ini
+COPY  conf/www.conf /usr/local/etc/php-fpm.d/www.conf
 
 #Alpine packages
 RUN apt-get update && apt-get install -y make g++ \
@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y make g++ \
 	libbz2-dev \
 	libmemcached-dev \
 	git \
+	--no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-install mbstring \
     && docker-php-ext-install iconv mcrypt \
@@ -78,10 +79,10 @@ ENV PHALCON_VERSION=3.0.1
 WORKDIR /usr/src/php/ext/
 # Compile Phalcon
 RUN set -xe && \
-    curl -LO https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.tar.gz && \
-    tar xzf v${PHALCON_VERSION}.tar.gz && cd cphalcon-${PHALCON_VERSION}/build && sh install && \
-    echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini && \
-    cd ../.. && rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} 
+    curl -LO https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.tar.gz \
+    && tar xzf v${PHALCON_VERSION}.tar.gz && cd cphalcon-${PHALCON_VERSION}/build && sh install && \
+    && echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini  \
+    && cd ../.. && rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} 
 
 RUN docker-php-source extract \
 	&& cd /usr/src/php/ext/bcmath \
