@@ -17,9 +17,14 @@ RUN apt-get update && apt-get install -y make g++ re2c \
     bzip2 \
 	libbz2-dev \
 	libmemcached-dev \
-	--no-install-recommends
+	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
-
+RUN docker-php-source extract \
+	&& cd /usr/src/php/ext/bcmath \
+	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
+	&& make clean \
+	&& docker-php-source delete
+	
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-install gd \
         && docker-php-ext-install mysqli \
@@ -42,10 +47,6 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 		
 WORKDIR /usr/src/php/ext/
 
-RUN tar -Jxf /usr/src/php.tar.xz -C /usr/src/php/src/ --strip-components=1 \
-	&& cd /usr/src/php/src/ext/bcmath \
-	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
-	&& make clean && cd .. && rm -rf /usr/src/php/src
 	
 RUN set -xe && \
 	curl -LO https://github.com/igbinary/igbinary/archive/2.0.5.tar.gz \
