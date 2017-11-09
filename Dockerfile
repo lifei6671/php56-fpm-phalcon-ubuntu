@@ -56,24 +56,24 @@ WORKDIR /usr/src/php/ext/
 
 RUN set -xe && \
 	curl -LO https://github.com/igbinary/igbinary/archive/2.0.5.tar.gz \
-	&& tar xzf 2.0.5.tar.gz && cd 2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
+	&& tar xzf 2.0.5.tar.gz && cd igbinary-2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
 	&& echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
-	&& cd ../ && rm -rf 2.0.5
+	&& cd ../ && rm -rf igbinary-2.0.5
 	
 # Compile Memcached 
 RUN set -xe && \
 	curl -LO https://github.com/php-memcached-dev/php-memcached/archive/2.2.0.tar.gz \
-	&& tar xzf 2.2.0.tar.gz && cd 2.2.0 && phpize && ./configure && make && make install && \
+	&& tar xzf 2.2.0.tar.gz && cd php-memcached-2.2.0 && phpize && ./configure && make && make install && \
 	echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini && \
-	cd .. && rm -rf 2.2.0 
+	cd .. && rm -rf php-memcached-2.2.0 
 	
 # Compile PhpRedis
 ENV PHPREDIS_VERSION=3.0.0
 
 RUN set -xe && \
 	curl -LO https://github.com/phpredis/phpredis/archive/3.1.4.tar.gz \
-	&& tar xzf 3.1.4.tar.gz && cd 3.1.4 && phpize ./configure --enable-redis-igbinary && make && make install && \
-	&& cd .. rm -rf 3.1.4
+	&& tar xzf 3.1.4.tar.gz && cd phpredis-3.1.4 && phpize ./configure --enable-redis-igbinary && make && make install && \
+	&& cd .. rm -rf phpredis-3.1.4
 	
 ENV PHALCON_VERSION=3.0.1
 
