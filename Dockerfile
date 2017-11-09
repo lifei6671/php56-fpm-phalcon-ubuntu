@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y make g++ \
     bzip2 \
 	libbz2-dev \
 	libmemcached-dev \
-	git \
 	--no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-install mbstring \
@@ -55,24 +54,26 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 		
 WORKDIR /usr/src/php/ext/
 
-RUN git clone  https://github.com/igbinary/igbinary.git && \
-	cd igbinary && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install && \
-	echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini && \
-	cd ../ && rm -rf igbinary
+RUN set -xe && \
+	curl -LO https://github.com/igbinary/igbinary/archive/2.0.5.tar.gz \
+	&& tar xzf 2.0.5.tar.gz && cd 2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
+	&& echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
+	&& cd ../ && rm -rf 2.0.5
 	
 # Compile Memcached 
-RUN git clone https://github.com/php-memcached-dev/php-memcached.git && \
-	cd php-memcached && phpize && ./configure && make && make install && \
+RUN set -xe && \
+	curl -LO https://github.com/php-memcached-dev/php-memcached/archive/2.2.0.tar.gz \
+	&& tar xzf 2.2.0.tar.gz && cd 2.2.0 && phpize && ./configure && make && make install && \
 	echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini && \
-	cd .. && rm -rf php-memcached 
+	cd .. && rm -rf 2.2.0 
 	
 # Compile PhpRedis
 ENV PHPREDIS_VERSION=3.0.0
 
-RUN git clone -b master https://github.com/phpredis/phpredis.git \
-	&& docker-php-ext-configure phpredis \
-	&& docker-php-ext-install phpredis \
-	&& rm -rf phpredis
+RUN set -xe && \
+	curl -LO https://github.com/phpredis/phpredis/archive/3.1.4.tar.gz \
+	&& tar xzf 3.1.4.tar.gz && cd 3.1.4 && phpize ./configure --enable-redis-igbinary && make && make install && \
+	&& cd .. rm -rf 3.1.4
 	
 ENV PHALCON_VERSION=3.0.1
 
