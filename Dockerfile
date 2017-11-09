@@ -59,7 +59,7 @@ RUN set -xe && \
 	&& tar xzf 2.0.5.tar.gz && cd igbinary-2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
 	&& echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
 	&& cd .. \
-	&& rm -rf igbinary-2.0.5
+	&& rm -rf igbinary-2.0.5 2.0.5.tar.gz
 	
 # Compile Memcached 
 RUN set -xe && \
@@ -70,7 +70,7 @@ RUN set -xe && \
 	&& ./configure && make && make install \
 	&& echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
 	&& cd .. \
-	&& rm -rf php-memcached-2.2.0 
+	&& rm -rf php-memcached-2.2.0  2.2.0.tar.gz
 	
 # Compile PhpRedis
 ENV PHPREDIS_VERSION=3.0.0
@@ -81,7 +81,7 @@ RUN set -xe && \
 	&&  docker-php-ext-configure phpredis-3.1.4 --enable-redis-igbinary \
 	&& docker-php-ext-install phpredis-3.1.4 \
 	&& cd .. \ 
-	&& rm -rf phpredis-3.1.4
+	&& rm -rf phpredis-3.1.4 3.1.4.tar.gz
 	
 ENV PHALCON_VERSION=3.0.1
 
