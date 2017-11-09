@@ -1,4 +1,4 @@
-FROM php:5.6.6-fpm
+FROM php:5.6.26-fpm
 
 MAINTAINER Minho <longfei6671@163.com>
 
