@@ -42,6 +42,11 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 		
 WORKDIR /usr/src/php/ext/
 
+RUN tar -Jxf /usr/src/php.tar.xz -C /usr/src/php/src/ --strip-components=1 \
+	&& cd /usr/src/php/src/ext/bcmath \
+	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
+	&& make clean && cd .. && rm -rf /usr/src/php/src
+	
 RUN set -xe && \
 	curl -LO https://github.com/igbinary/igbinary/archive/2.0.5.tar.gz \
 	&& tar xzf 2.0.5.tar.gz && cd igbinary-2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
@@ -83,10 +88,7 @@ RUN set -xe && \
     && cd .. \
 	&& rm -rf v${PHALCON_VERSION}.tar.gz
 
-RUN tar -Jxf /usr/src/php.tar.xz -C /usr/src/php/src/ --strip-components=1 \
-	&& cd /usr/src/php/src/ext/bcmath \
-	&& phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make install \
-	&& make clean && cd .. && rm -rf /usr/src/php/src/
+
 
 #ImageMagick
 RUN set -xe && \
