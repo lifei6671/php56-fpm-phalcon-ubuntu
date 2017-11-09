@@ -49,7 +49,7 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 		&& echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
 		&& echo "extension=bcmath.so" > /usr/local/etc/php/conf.d/bcmath.ini \
 		&& echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini \
-		&& echo "extension=imagick.so" >> /usr/local/etc/php/conf.d/imagick.ini
+		&& echo "extension=imagick.so" >> /usr/local/etc/php/conf.d/imagick.ini 
 
 		
 WORKDIR /usr/src/php/ext/
@@ -58,22 +58,32 @@ RUN set -xe && \
 	curl -LO https://github.com/igbinary/igbinary/archive/2.0.5.tar.gz \
 	&& tar xzf 2.0.5.tar.gz && cd igbinary-2.0.5 && phpize && ./configure CFLAGS="-O2 -g" --enable-igbinary && make install \
 	&& echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini \
-	&& cd ../ && rm -rf igbinary-2.0.5
+	&& cd .. \
+	&& rm -rf igbinary-2.0.5
 	
 # Compile Memcached 
 RUN set -xe && \
 	curl -LO https://github.com/php-memcached-dev/php-memcached/archive/2.2.0.tar.gz \
-	&& tar xzf 2.2.0.tar.gz && cd php-memcached-2.2.0 && phpize && ./configure && make && make install && \
-	echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini && \
-	cd .. && rm -rf php-memcached-2.2.0 
+	&& tar xzf 2.2.0.tar.gz \
+	&& cd php-memcached-2.2.0 \
+	&& phpize \
+	&& ./configure && make && make install \
+	&& echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
+	&& cd .. \
+	&& rm -rf php-memcached-2.2.0 
 	
 # Compile PhpRedis
 ENV PHPREDIS_VERSION=3.0.0
 
 RUN set -xe && \
 	curl -LO https://github.com/phpredis/phpredis/archive/3.1.4.tar.gz \
-	&& tar xzf 3.1.4.tar.gz && cd phpredis-3.1.4 && phpize ./configure --enable-redis-igbinary && make && make install && \
-	&& cd .. rm -rf phpredis-3.1.4
+	&& tar xzf 3.1.4.tar.gz \
+	&& cd phpredis-3.1.4 \
+	&& phpize ./configure --enable-redis-igbinary \
+	&& make \
+	&& make install  \
+	&& cd .. \ 
+	&& rm -rf phpredis-3.1.4
 	
 ENV PHALCON_VERSION=3.0.1
 
@@ -81,9 +91,11 @@ WORKDIR /usr/src/php/ext/
 # Compile Phalcon
 RUN set -xe && \
     curl -LO https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.tar.gz \
-    && tar xzf v${PHALCON_VERSION}.tar.gz && cd cphalcon-${PHALCON_VERSION}/build && sh install && \
+    && tar xzf v${PHALCON_VERSION}.tar.gz \
+	&& cd cphalcon-${PHALCON_VERSION}/build && sh install && \
     && echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini  \
-    && cd ../.. && rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} 
+    && cd .. \
+	&& rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} 
 
 RUN docker-php-source extract \
 	&& cd /usr/src/php/ext/bcmath \
