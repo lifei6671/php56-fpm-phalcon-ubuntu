@@ -1,4 +1,4 @@
-FROM php:5.6.26-fpm
+FROM php:5.6.5-fpm
 
 MAINTAINER Minho <longfei6671@163.com>
 
@@ -93,7 +93,7 @@ RUN set -xe && \
 	&& cd cphalcon-${PHALCON_VERSION}/build && ./install \
     && echo "extension=phalcon.so" > /usr/local/etc/php/conf.d/phalcon.ini  \
     && cd .. \
-	&& rm -rf v${PHALCON_VERSION}.tar.gz cphalcon-${PHALCON_VERSION} 
+	&& rm -rf v${PHALCON_VERSION}.tar.gz
 
 RUN docker-php-source extract \
 	&& cd /usr/src/php/ext/bcmath \
@@ -103,20 +103,23 @@ RUN docker-php-source extract \
 
 #ImageMagick
 RUN set -xe && \
-	curl -LO https://github.com/ImageMagick/ImageMagick/archive/6.9.6-8.tar.gz && \
-	tar xzf 6.9.6-8.tar.gz && cd ImageMagick-6.9.6-8 && ./configure --with-bzlib=yes --with-fontconfig=yes --with-freetype=yes --with-gslib=yes --with-gvc=yes --with-jpeg=yes --with-jp2=yes --with-png=yes --with-tiff=yes && make clean && make && make install && \
-	make clean && ldconfig /usr/local/lib
+	curl -LO https://github.com/ImageMagick/ImageMagick/archive/6.9.6-8.tar.gz \
+	&& tar xzf 6.9.6-8.tar.gz && cd ImageMagick-6.9.6-8 \
+	&& ./configure --with-bzlib=yes --with-fontconfig=yes --with-freetype=yes --with-gslib=yes --with-gvc=yes --with-jpeg=yes --with-jp2=yes --with-png=yes --with-tiff=yes && make clean && make && make install && \
+	make clean && ldconfig /usr/local/lib \
+	&& cd .. && rm -rf 6.9.6-8.tar.gz ImageMagick-6.9.6-8
 
 RUN set -xe && \
 	curl -LO https://github.com/mkoppanen/imagick/archive/3.4.2.tar.gz && \
-	tar zxvf  3.4.2.tar.gz && cd imagick-3.4.2 && phpize && ./configure  --with-php-config=/usr/local/bin/php-config --with-imagick=/usr/local/lib && make && make install
+	tar zxvf  3.4.2.tar.gz && cd imagick-3.4.2 && phpize && ./configure  --with-php-config=/usr/local/bin/php-config --with-imagick=/usr/local/lib && make && make install \
+	&& cd .. && rm -rf 3.4.2.tar.gz imagick-3.4.2
 	
 #Compile XDebug
 RUN set -xe && \
 	curl -LO https://github.com/xdebug/xdebug/archive/XDEBUG_2_4_1.tar.gz && \
 	tar xzf XDEBUG_2_4_1.tar.gz && cd xdebug-XDEBUG_2_4_1 && \
 	phpize && ./configure --enable-xdebug && make && make install && \
-	cd ../ && rm -rf xdebug-XDEBUG_2_4_1
+	cd ../ && rm -rf xdebug-XDEBUG_2_4_1 XDEBUG_2_4_1.tar.gz
 	
 	
 COPY docker-entrypoint.sh /usr/local/bin/
